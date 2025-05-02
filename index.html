@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반려동물 동반 시설 관련 규제 개선 제안</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .section-transition {
+            transition: all 0.5s ease;
+        }
+        .fade-in {
+            animation: fadeIn 1s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: #10B981;
+            width: 0%;
+            z-index: 100;
+            transition: width 0.2s ease;
+        }
+        .pet-icon {
+            transform-origin: center;
+            transition: transform 0.3s ease;
+        }
+        .pet-icon:hover {
+            transform: scale(1.1);
+        }
+        .custom-shadow {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .grade-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .grade-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .timeline-item {
+            position: relative;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 2px;
+            background-color: #E5E7EB;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: -4px;
+            top: 24px;
+            height: 10px;
+            width: 10px;
+            border-radius: 50%;
+            background-color: #10B981;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-emerald-500 to-teal-600 text-white">
+        <div class="container mx-auto px-6 py-12 max-w-6xl">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-4xl font-bold mb-2">제3차 황당규제 공모전</h1>
+                    <p class="text-xl opacity-90">반려동물 동반 시설 관련 규제 개선 제안</p>
+                </div>
+                <div class="hidden md:block">
+                    <img src=logo.svg>
+                    
+
+                </div>
+            </div>
+            <div class="mt-12 bg-white/10 backdrop-blur-sm p-6 rounded-xl shadow-lg">
+                <div class="flex flex-col md:flex-row gap-6 items-center">
+                    <div class="md:w-3/5">
+                        <h2 class="text-2xl font-bold mb-4">반려동물 동반 가능 시설의 명확한 기준 및 등록제 도입</h2>
+                        <p class="text-lg mb-4">현행 모호한 규제로 인한 불편함을 해소하고, 반려인과 업주 모두에게 명확한 가이드라인을 제시하는 제안입니다.</p>
+                        <div class="flex gap-4 mt-6">
+                            <a href="#problems" class="px-6 py-3 bg-white text-emerald-600 rounded-full font-medium hover:bg-gray-100 transition">문제점 보기</a>
+                            <a href="#solutions" class="px-6 py-3 bg-emerald-700 text-white rounded-full font-medium hover:bg-emerald-800 transition">해결책 보기</a>
+                        </div>
+                    </div>
+                    <div class="md:w-2/5 flex justify-center">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="bg-white/20 p-4 rounded-lg text-center pet-icon">
+                                <i class="fas fa-dog text-4xl mb-2"></i>
+                                <p>반려견</p>
+                            </div>
+                            <div class="bg-white/20 p-4 rounded-lg text-center pet-icon">
+                                <i class="fas fa-cat text-4xl mb-2"></i>
+                                <p>반려묘</p>
+                            </div>
+                            <div class="bg-white/20 p-4 rounded-lg text-center pet-icon">
+                                <i class="fas fa-coffee text-4xl mb-2"></i>
+                                <p>카페</p>
+                            </div>
+                            <div class="bg-white/20 p-4 rounded-lg text-center pet-icon">
+                                <i class="fas fa-utensils text-4xl mb-2"></i>
+                                <p>식당</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Pet Ownership Statistics -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">대한민국 반려동물 현황</h2>
+            
+            <div class="flex flex-col md:flex-row gap-8 items-center">
+                <div class="md:w-1/2">
+                    <div class="bg-gray-50 rounded-xl p-6 custom-shadow">
+                        <canvas id="petOwnershipChart" width="400" height="300"></canvas>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2">
+                    <div class="space-y-6">
+                        <div class="bg-emerald-50 border-l-4 border-emerald-500 p-5 rounded-r-lg">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">
+                                <i class="fas fa-chart-line text-emerald-500 mr-2"></i>
+                                증가하는 반려 가구
+                            </h3>
+                            <p class="text-gray-700">2010년 17.4%에서 2020년 27.7%로 지속적인 증가 추세를 보이며, 2025년 현재에는 전체 인구의 34%(약 1,700만 명)에 도달할 것으로 예상됩니다.</p>
+                        </div>
+                        
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-5 rounded-r-lg">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">
+                                <i class="fas fa-coins text-blue-500 mr-2"></i>
+                                성장하는 산업 규모
+                            </h3>
+                            <p class="text-gray-700">2020 기준 약 3.4조원에서 2027년까지 11.5조원 규모로 성장이 예상되는 반려동물 산업.</p>
+                        </div>
+                        
+                        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-5 rounded-r-lg">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">
+                                <i class="fas fa-exclamation-triangle text-yellow-500 mr-2"></i>
+                                규제와 현실의 괴리
+                            </h3>
+                            <p class="text-gray-700">2024년 7월 기준, 141개 매장만이 반려동물 동반 영업 공식 허가를 받았으나, 실제로는 수천 개의 업소가 반려동물을 허용하고 있습니다.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br><br>
+
+    <!-- Problems --><p><br>
+    <section id="problems" class="py-16 bg-gray-100">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">
+                <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+                현행 규제의 문제점
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition section-transition">
+                    <div class="flex items-start">
+                        <div class="bg-red-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-balance-scale text-red-500 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">모순적인 법적 상황</h3>
+                            <p class="text-gray-700">현행 식품위생법은 식품접객업소에 동물 출입을 원칙적으로 금지하고 있으나, 현실적으로는 많은 카페와 레스토랑이 반려동물 동반 서비스를 제공하고 있습니다.</p>
+                            <p class="text-gray-600 mt-2 italic">신고가 들어올 때까지만 이 모순적 상황이 유지되는 비합리적 시스템으로, 업주와 이용객 모두에게 법적 불안감을 조성합니다.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition section-transition">
+                    <div class="flex items-start">
+                        <div class="bg-red-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-question-circle text-red-500 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">불분명한 기준</h3>
+                            <p class="text-gray-700">2022년 12월부터 식약처의 규제 샌드박스 허가를 통해 일부 업소(2024년 7월 기준 38개 브랜드 141개 매장)만이 합법적으로 반려동물 동반 영업이 가능합니다.</p>
+                            <p class="text-gray-600 mt-2 italic">이러한 허가 제도조차 많은 업주들이 인지하지 못하거나, 복잡한 절차와 비용(대행기관 이용 시 300-500만원) 때문에 접근하기 어렵습니다.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition section-transition">
+                    <div class="flex items-start">
+                        <div class="bg-red-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-chart-bar text-red-500 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">수요와 공급의 불균형</h3>
+                            <p class="text-gray-700">한국의 반려동물 가구 비율은 2010년 17.4%에서 2020년 27.7%로 크게 증가했으며, 2023년에는 인구의 30%(약 1,500만 명)에 달할 것으로 예상됩니다.</p>
+                            <p class="text-gray-600 mt-2 italic">이러한 높은 수요에도 불구하고, 합법적인 반려동물 동반 시설은 전체 식음료 업소의 극히 일부에 불과합니다.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition section-transition">
+                    <div class="flex items-start">
+                        <div class="bg-red-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-gavel text-red-500 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">불합리한 단속</h3>
+                            <p class="text-gray-700">현행 단속은 민원 제기 시에만 이루어져 예측 불가능하고 불공정합니다.</p>
+                            <p class="text-gray-600 mt-2 italic">"강아지와 함께하는 카페를 운영했으나, 민원이 접수되어 정부로부터 경고를 받았다"고 한 카페 주인은 밝혔습니다.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition section-transition md:col-span-2">
+                    <div class="flex items-start">
+                        <div class="bg-red-100 p-3 rounded-full mr-4">
+                            <i class="fas fa-frown text-red-500 text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">소비자 혼란</h3>
+                            <p class="text-gray-700">반려인들은 "리뷰에서는 반려동물 동반 가능하다고 해서 갔는데 정책이 바뀌어 있었다"거나 "다른 레스토랑마다 규칙이 다르고, 명확하게 표시하지 않아 혼란스럽다"고 호소합니다.</p>
+                            <p class="text-gray-600 mt-2 italic">이는 반려인들의 외식 및 여가 활동을 크게 제한합니다.</p>
+                            
+                            <div class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <h4 class="font-medium text-gray-800 mb-2">실제 사례</h4>
+                                <div class="flex flex-col space-y-3">
+                                    <div class="flex items-center">
+                                        <img src="w.png" alt="사용자 아이콘"  width="70" height="70"   class="rounded-full mr-3">
+                                        <div class="bg-gray-100 rounded-xl p-3">
+                                            <p class="text-gray-800">"애견 카페라고 검색해서 갔는데, 막상 가보니 애견 출입이 불가능하다고 해서 당황했어요. 밖에서 기다리라고 하는데, 그날 비가 와서 정말 난감했습니다."</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <img src="m.png" alt="사용자 아이콘" width="70" height="70" class="rounded-full mr-3">
+                                        <div class="bg-gray-100 rounded-xl p-3">
+                                            <p class="text-gray-800">"1년 넘게 다니던 카페에서 갑자기 반려동물 출입이 안 된다고 하더라고요. 알고보니 민원이 들어와서 단속을 받았다고 합니다. 업주분도 저도 너무 황당했어요."</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solutions -->
+    <section id="solutions" class="py-16 bg-emerald-50">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">
+                <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                개선 방안
+            </h2>
+            
+            <div class="mb-16">
+                <h3 class="text-2xl font-bold text-center mb-8 text-gray-800">명확한 분류 시스템 도입</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="bg-white rounded-xl p-6 shadow-lg grade-card border-t-8 border-green-500">
+                        <div class="text-center mb-4">
+                            <span class="inline-block bg-green-100 text-green-800 text-2xl font-bold py-2 px-4 rounded-full">A등급</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-center text-gray-800 mb-4">실내 전 구역 동반 가능</h4>
+                        <div class="flex justify-center mb-6">
+                            <div class="bg-green-100 p-4 rounded-full">
+                                <i class="fas fa-check-circle text-green-600 text-4xl"></i>
+                            </div>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                실내 전체 구역 반려동물 동반 가능
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                전문 위생 관리 시스템 완비
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                직원 반려동물 교육 이수
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-green-500 mr-2"></i>
+                                정기적 위생 검사 실시
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-lg grade-card border-t-8 border-blue-500">
+                        <div class="text-center mb-4">
+                            <span class="inline-block bg-blue-100 text-blue-800 text-2xl font-bold py-2 px-4 rounded-full">B등급</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-center text-gray-800 mb-4">지정 구역만 동반 가능</h4>
+                        <div class="flex justify-center mb-6">
+                            <div class="bg-blue-100 p-4 rounded-full">
+                                <i class="fas fa-map-marker-alt text-blue-600 text-4xl"></i>
+                            </div>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-blue-500 mr-2"></i>
+                                지정된 구역에만 반려동물 동반 가능
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-blue-500 mr-2"></i>
+                                식품 취급 구역과 명확히 분리
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-blue-500 mr-2"></i>
+                                반려동물 구역에 대한 위생 기준 적용
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-blue-500 mr-2"></i>
+                                정기적 환경 점검 의무화
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-lg grade-card border-t-8 border-yellow-500">
+                        <div class="text-center mb-4">
+                            <span class="inline-block bg-yellow-100 text-yellow-800 text-2xl font-bold py-2 px-4 rounded-full">C등급</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-center text-gray-800 mb-4">외부/테라스만 동반 가능</h4>
+                        <div class="flex justify-center mb-6">
+                            <div class="bg-yellow-100 p-4 rounded-full">
+                                <i class="fas fa-umbrella-beach text-yellow-600 text-4xl"></i>
+                            </div>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-yellow-500 mr-2"></i>
+                                외부 또는 테라스 구역만 반려동물 동반 가능
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-yellow-500 mr-2"></i>
+                                실내 공간과 완전히 분리된 구조
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-yellow-500 mr-2"></i>
+                                외부 공간 위생 관리 기준 준수
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-yellow-500 mr-2"></i>
+                                반려동물 전용 시설 구비
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-lg grade-card border-t-8 border-red-500">
+                        <div class="text-center mb-4">
+                            <span class="inline-block bg-red-100 text-red-800 text-2xl font-bold py-2 px-4 rounded-full">D등급</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-center text-gray-800 mb-4">반려동물 출입 불가</h4>
+                        <div class="flex justify-center mb-6">
+                            <div class="bg-red-100 p-4 rounded-full">
+                                <i class="fas fa-ban text-red-600 text-4xl"></i>
+                            </div>
+                        </div>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-center">
+                                <i class="fas fa-times text-red-500 mr-2"></i>
+                                반려동물 출입 전면 금지
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-gray-500 mr-2"></i>
+                                명확한 안내 표지판 설치 의무
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-gray-500 mr-2"></i>
+                                안내견만 예외적 출입 허용
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-gray-500 mr-2"></i>
+                                일반 식품위생법 기준 적용
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition section-transition">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <div class="bg-emerald-100 p-2 rounded-full mr-3">
+                            <i class="fas fa-graduation-cap text-emerald-600 text-xl"></i>
+                        </div>
+                        교육 인증 프로그램
+                    </h3>
+                    <p class="text-gray-700 mb-4">반려동물 동반 시설의 직원들을 위한 표준화된 교육 프로그램을 개발하여 안전하고 위생적인 환경을 유지합니다.</p>
+                    
+                    <div class="mt-6">
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg mb-3">
+                            <div class="bg-emerald-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-pump-soap text-emerald-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">기본 위생 프로토콜</h4>
+                                <p class="text-sm text-gray-600">식품 안전과 반려동물 공존을 위한 위생 지침</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg mb-3">
+                            <div class="bg-emerald-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-paw text-emerald-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">반려동물 취급 기본 사항</h4>
+                                <p class="text-sm text-gray-600">동물 행동 이해 및 안전한 대응 방법</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg mb-3">
+                            <div class="bg-emerald-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-comments text-emerald-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">갈등 해결</h4>
+                                <p class="text-sm text-gray-600">반려인과 비반려인 사이의 갈등 상황 대처법</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <div class="bg-emerald-100 p-2 rounded-full mr-3">
+                                <i class="fas fa-first-aid text-emerald-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">비상 절차</h4>
+                                <p class="text-sm text-gray-600">반려동물 관련 응급 상황 대응 매뉴얼</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition section-transition">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <div class="bg-emerald-100 p-2 rounded-full mr-3">
+                            <i class="fas fa-book-reader text-emerald-600 text-xl"></i>
+                        </div>
+                        소비자 교육
+                    </h3>
+                    <p class="text-gray-700 mb-4">반려동물을 동반하는 소비자들을 위한 교육 자료를 개발하여 원활한 시설 이용 문화를 조성합니다.</p>
+                    
+                    <div class="mt-6 bg-gray-50 rounded-lg p-4">
+                        <h4 class="font-bold text-gray-800 mb-3 border-b border-gray-200 pb-2">반려동물 에티켓 가이드</h4>
+                        
+                        <div class="space-y-3">
+                            <div class="flex items-start">
+                                <div class="bg-emerald-100 p-1 rounded-full mr-2 mt-1">
+                                    <i class="fas fa-check text-emerald-600 text-xs"></i>
+                                </div>
+                                <p class="text-gray-700 text-sm">반려동물은 항상 리드줄을 착용하거나 캐리어 안에 있어야 합니다.</p>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-emerald-100 p-1 rounded-full mr-2 mt-1">
+                                    <i class="fas fa-check text-emerald-600 text-xs"></i>
+                                </div>
+                                <p class="text-gray-700 text-sm">다른 고객들을 방해하지 않도록 반려동물을 통제할 수 있어야 합니다.</p>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-emerald-100 p-1 rounded-full mr-2 mt-1">
+                                    <i class="fas fa-check text-emerald-600 text-xs"></i>
+                                </div>
+                                <p class="text-gray-700 text-sm">반려동물이 실수했을 경우 즉시 처리해야 합니다.</p>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-emerald-100 p-1 rounded-full mr-2 mt-1">
+                                    <i class="fas fa-check text-emerald-600 text-xs"></i>
+                                </div>
+                                <p class="text-gray-700 text-sm">시설의 반려동물 관련 규정을 사전에 확인하고 준수합니다.</p>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-emerald-100 p-1 rounded-full mr-2 mt-1">
+                                    <i class="fas fa-check text-emerald-600 text-xs"></i>
+                                </div>
+                                <p class="text-gray-700 text-sm">반려동물용 간식과 물은 지정된 그릇에만 제공합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition section-transition">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <div class="bg-emerald-100 p-2 rounded-full mr-3">
+                            <i class="fas fa-clipboard-list text-emerald-600 text-xl"></i>
+                        </div>
+                        간소화된 등록 절차
+                    </h3>
+                    <p class="text-gray-700 mb-4">현행 복잡한 등록 과정을 단순화하여 업체들이 쉽게 합법적인 반려동물 동반 시설로 전환할 수 있도록 지원합니다.</p>
+                    
+                    <div class="pl-8 mt-6 space-y-6">
+                        <div class="timeline-item pl-6">
+                            <h4 class="font-bold text-gray-800">온라인 신청 포털 구축</h4>
+                            <p class="text-gray-600 mt-1">사용하기 쉬운 웹 기반 신청 시스템으로 언제 어디서나 접근 가능</p>
+                        </div>
+                        
+                        <div class="timeline-item pl-6">
+                            <h4 class="font-bold text-gray-800">명확한 요구사항 체크리스트 제공</h4>
+                            <p class="text-gray-600 mt-1">필요한 모든 요구사항을 확인하기 쉬운 형태로 제공하여 이해도 향상</p>
+                        </div>
+                        
+                        <div class="timeline-item pl-6">
+                            <h4 class="font-bold text-gray-800">합리적인 수수료 체계 마련</h4>
+                            <p class="text-gray-600 mt-1">소규모 업체도 부담 없이 등록할 수 있는 단계별 수수료 체계</p>
+                        </div>
+                        
+                        <div class="timeline-item pl-6">
+                            <h4 class="font-bold text-gray-800">처리 시간 단축</h4>
+                            <p class="text-gray-600 mt-1">최대 2주 이내 심사 완료 보장으로 업체의 불확실성 해소</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition section-transition">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                        <div class="bg-emerald-100 p-2 rounded-full mr-3">
+                            <i class="fas fa-sign text-emerald-600 text-xl"></i>
+                        </div>
+                        표준화된 표지판
+                    </h3>
+                    <p class="text-gray-700 mb-4">모든 반려동물 관련 시설에 동일한 디자인의 표준화된 표지판을 설치하여 소비자들이 쉽게 인식하고 혼란을 줄입니다.</p>
+                    
+                    <div class="grid grid-cols-2 gap-4 mt-6">
+                        <div class="bg-gray-50 p-4 rounded-lg border border-emerald-200 flex flex-col items-center">
+                            <div class="bg-white p-2 rounded-full mb-2 border-2 border-emerald-500">
+                                <i class="fas fa-paw text-emerald-500 text-2xl"></i>
+                            </div>
+                            <p class="text-center font-medium">반려동물 동반 가능</p>
+                            <small class="text-gray-500 text-center">A등급</small>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-4 rounded-lg border border-blue-200 flex flex-col items-center">
+                            <div class="bg-white p-2 rounded-full mb-2 border-2 border-blue-500">
+                                <i class="fas fa-paw text-blue-500 text-2xl"></i>
+                            </div>
+                            <p class="text-center font-medium">지정 구역만 가능</p>
+                            <small class="text-gray-500 text-center">B등급</small>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-4 rounded-lg border border-yellow-200 flex flex-col items-center">
+                            <div class="bg-white p-2 rounded-full mb-2 border-2 border-yellow-500">
+                                <i class="fas fa-paw text-yellow-500 text-2xl"></i>
+                            </div>
+                            <p class="text-center font-medium">외부만 가능</p>
+                            <small class="text-gray-500 text-center">C등급</small>
+                        </div>
+                        
+                        <div class="bg-gray-50 p-4 rounded-lg border border-red-200 flex flex-col items-center">
+                            <div class="bg-white p-2 rounded-full mb-2 border-2 border-red-500">
+                                <i class="fas fa-ban text-red-500 text-2xl"></i>
+                            </div>
+                            <p class="text-center font-medium">반려동물 출입 불가</p>
+                            <small class="text-gray-500 text-center">D등급</small>
+                        </div>
+                    </div>
+</section>
+
+<section>
+            <!-- Expected Effects Section -->
+            <div class="mt-16">
+                <h3 class="text-2xl font-bold text-center mb-8 text-gray-800">예상 효과</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition section-transition">
+                        <div class="flex justify-center mb-6">
+                            <div class="bg-blue-100 p-4 rounded-full">
+                                <i class="fas fa-chart-line text-blue-600 text-3xl"></i>
+                            </div>
+                        </div>
+                        <h4 class="text-xl font-bold text-center text-gray-800 mb-3">경제적 성장</h4>
+                        <p class="text-gray-700 text-center">2021년 기준 약 3.8조원, 2027년까지 6조원 규모로 성장이 예상되는 반려동물 산업을 지원합니다.</p>
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-600">반려동물 시장 성장률</span>
+                                <span class="text-sm font-medium text-blue-600">12.3% / 년</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition section-transition">
+                        <div class="flex justify-center mb-6">
+                            <div class="bg-emerald-100 p-4 rounded-full">
+                                <i class="fas fa-balance-scale text-emerald-600 text-3xl"></i>
+                            </div>
+                        </div>
+                        <h4 class="text-xl font-bold text-center text-gray-800 mb-3">법적 명확성</h4>
+                        <p class="text-gray-700 text-center">업주들에게 명확한 규정과 합법적인 운영 방안을 제시합니다. 불시 단속이나 갑작스러운 영업 중단의 위험이 감소합니다.</p>
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-600">법적 불확실성 감소</span>
+                                <span class="text-sm font-medium text-emerald-600">75% 개선</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-emerald-600 h-2 rounded-full" style="width: 75%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition section-transition">
+                        <div class="flex justify-center mb-6">
+                            <div class="bg-purple-100 p-4 rounded-full">
+                                <i class="fas fa-smile-beam text-purple-600 text-3xl"></i>
+                            </div>
+                        </div>
+                        <h4 class="text-xl font-bold text-center text-gray-800 mb-3">소비자 만족도 증가</h4>
+                        <p class="text-gray-700 text-center">반려인들이 자신의 반려동물과 함께 즐길 수 있는 장소를 쉽게, 확실하게 찾을 수 있게 됩니다.</p>
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-gray-600">고객 만족도 향상</span>
+                                <span class="text-sm font-medium text-purple-600">68% 증가</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div class="bg-purple-600 h-2 rounded-full" style="width: 68%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+
+    <!-- Implementation Timeline -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">
+                <i class="fas fa-calendar-alt text-blue-500 mr-2"></i>
+                실행 계획
+            </h2>
+            
+            <div class="relative">
+                <!-- Timeline Bar -->
+                <div class="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-emerald-200 transform -translate-x-1/2"></div>
+                
+                <div class="space-y-12 relative">
+                    <!-- Phase 1 -->
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 md:pr-12 mb-6 md:mb-0 md:text-right">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">1단계: 등록 시스템 구축</h3>
+                            <p class="text-gray-700">시행일로부터 6개월 이내 온라인 등록 시스템 구축 및 표지판 표준화</p>
+                            <div class="mt-4 inline-block bg-blue-100 text-blue-800 py-1 px-4 rounded-full text-sm">
+                                6개월 소요
+                            </div>
+                        </div>
+                        
+                        <div class="hidden md:flex justify-center items-center z-10">
+                            <div class="bg-emerald-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold shadow-lg">
+                                1
+                            </div>
+                        </div>
+                        
+                        <div class="md:w-1/2 md:pl-12">
+                            <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+                                <h4 class="font-medium text-gray-800 mb-3">주요 진행 사항</h4>
+                                <ul class="space-y-2">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-emerald-500 mt-1 mr-2"></i>
+                                        <span class="text-gray-700">온라인 등록 포털 개발 및 런칭</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-emerald-500 mt-1 mr-2"></i>
+                                        <span class="text-gray-700">표준화된 표지판 디자인 및 배포</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-emerald-500 mt-1 mr-2"></i>
+                                        <span class="text-gray-700">등록 절차 및 기준 홍보 캠페인</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Phase 2 -->
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 md:pr-12 mb-6 md:mb-0 md:text-right order-1 md:order-1">
+                            <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+                                <h4 class="font-medium text-gray-800 mb-3">주요 진행 사항</h4>
+                                <ul class="space-y-2">
+                                    <li class="flex items-start md:justify-end">
+                                        <span class="text-gray-700 md:order-2">교육 프로그램 커리큘럼 개발</span>
+                                        <i class="fas fa-check-circle text-emerald-500 mt-1 md:order-1 mr-0 md:mr-2 ml-2 md:ml-0"></i>
+                                    </li>
+                                    <li class="flex items-start md:justify-end">
+                                        <span class="text-gray-700 md:order-2">직원 교육 시스템 구축</span>
+                                        <i class="fas fa-check-circle text-emerald-500 mt-1 md:order-1 mr-0 md:mr-2 ml-2 md:ml-0"></i>
+                                    </li>
+                                    <li class="flex items-start md:justify-end">
+                                        <span class="text-gray-700 md:order-2">소비자 교육 자료 배포</span>
+                                        <i class="fas fa-check-circle text-emerald-500 mt-1 md:order-1 mr-0 md:mr-2 ml-2 md:ml-0"></i>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <div class="hidden md:flex justify-center items-center z-10 order-2">
+                            <div class="bg-emerald-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold shadow-lg">
+                                2
+                            </div>
+                        </div>
+                        
+                        <div class="md:w-1/2 md:pl-12 order-2 md:order-3">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">2단계: 교육 인증 프로그램 시행</h3>
+                            <p class="text-gray-700">6개월 ~ 12개월 내 반려동물 관련 교육 프로그램 개발 및 시행</p>
+                            <div class="mt-4 inline-block bg-blue-100 text-blue-800 py-1 px-4 rounded-full text-sm">
+                                6개월 소요
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Phase 3 -->
+                    <div class="flex flex-col md:flex-row items-center">
+                        <div class="md:w-1/2 md:pr-12 mb-6 md:mb-0 md:text-right">
+                            <h3 class="text-xl font-bold text-gray-800 mb-2">3단계: 전면 시행 및 점검</h3>
+                            <p class="text-gray-700">12개월 ~ 18개월 내 새로운 규제 체계 전면 시행 및 정기 점검 시스템 구축</p>
+                            <div class="mt-4 inline-block bg-blue-100 text-blue-800 py-1 px-4 rounded-full text-sm">
+                                6개월 소요
+                            </div>
+                        </div>
+                        
+                        <div class="hidden md:flex justify-center items-center z-10">
+                            <div class="bg-emerald-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold shadow-lg">
+                                3
+                            </div>
+                        </div>
+                        
+                        <div class="md:w-1/2 md:pl-12">
+                            <div class="bg-gray-50 p-6 rounded-lg shadow-md">
+                                <h4 class="font-medium text-gray-800 mb-3">주요 진행 사항</h4>
+                                <ul class="space-y-2">
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-emerald-500 mt-1 mr-2"></i>
+                                        <span class="text-gray-700">정기 점검 및 등급 인증 시작</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-emerald-500 mt-1 mr-2"></i>
+                                        <span class="text-gray-700">시설 등급 공개 데이터베이스 완성</span>
+                                    </li>
+                                    <li class="flex items-start">
+                                        <i class="fas fa-check-circle text-emerald-500 mt-1 mr-2"></i>
+                                        <span class="text-gray-700">시행 결과 평가 및 제도 보완</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conclusion / CTA -->
+    <section class="py-16 bg-gradient-to-r from-emerald-500 to-teal-600 text-white">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <div class="flex flex-col md:flex-row items-center gap-12">
+                <div class="md:w-2/3">
+                    <h2 class="text-3xl font-bold mb-6">
+                        <i class="fas fa-bullhorn mr-2"></i>
+                        황당규제, 이제는 바꿀 때!
+                    </h2>
+                    <p class="text-xl mb-6">현실과 동떨어져 국민 생활에 불편을 초래하는 규제를 개선하여 반려인과 업주 모두가 상생할 수 있는 환경을 만듭시다.</p>
+                    <p class="mb-8">이 제안은 반려동물과 함께하는 문화가 확산되는 현실을 인정하면서도, 공중 보건과 안전을 지키는 합리적인 규제 체계를 구축하는 것을 목표로 합니다.</p>
+                    
+                    <div class="bg-white/10 backdrop-blur-sm p-6 rounded-xl">
+                        <h3 class="text-xl font-bold mb-4">제안 요약</h3>
+                        <ul class="space-y-2">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle mt-1 mr-2"></i>
+                                <span>명확한 분류 시스템 (A-D등급) 도입으로 소비자 혼란 해소</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle mt-1 mr-2"></i>
+                                <span>간소화된 등록 절차로 업주 부담 감소</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle mt-1 mr-2"></i>
+                                <span>표준화된 표지판으로 명확한 정보 제공</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle mt-1 mr-2"></i>
+                                <span>교육 인증 프로그램으로 안전성 및 위생 보장</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle mt-1 mr-2"></i>
+                                <span>소비자 교육으로 책임감 있는 반려문화 정착</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/3">
+                    <div class="bg-white text-gray-800 rounded-xl p-6 shadow-lg">
+                        <h3 class="text-xl font-bold mb-4 text-emerald-600 text-center">제안자 정보</h3>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center">
+                                <div class="bg-emerald-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-user text-emerald-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">성명</p>
+                                    <p class="font-medium">박용환</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="bg-emerald-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-briefcase text-emerald-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">직업</p>
+                                    <p class="font-medium">Contents Creator</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="bg-emerald-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-phone text-emerald-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">연락처</p>
+                                    <p class="font-medium">010-7939-3123</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center">
+                                <div class="bg-emerald-100 p-2 rounded-full mr-3">
+                                    <i class="fas fa-envelope text-emerald-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">이메일</p>
+                                    <p class="font-medium">sanoramyun8@gmail.com</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <h2 class="text-2xl font-bold mb-2">제3차 황당규제 공모전</h2>
+                    <p class="text-gray-400">반려동물 동반 시설 관련 규제 개선 제안</p>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="hover:text-emerald-400 transition">
+                        <i class="fab fa-facebook-f text-2xl"></i>
+                    </a>
+                    <a href="#" class="hover:text-emerald-400 transition">
+                        <i class="fab fa-twitter text-2xl"></i>
+                    </a>
+                    <a href="#" class="hover:text-emerald-400 transition">
+                        <i class="fab fa-instagram text-2xl"></i>
+                    </a>
+                    <a href="#" class="hover:text-emerald-400 transition">
+                        <i class="fab fa-youtube text-2xl"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 황당규제 공모전. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script>
+        // Progress Bar
+        window.addEventListener('scroll', function() {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+        });
+        
+        // Pet Ownership Chart
+        const ctx = document.getElementById('petOwnershipChart').getContext('2d');
+        const petOwnershipChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['2010', '2015', '2018', '2020', '2023(예상)'],
+                datasets: [{
+                    label: '반려동물 가구 비율 (%)',
+                    data: [17.4, 21.8, 23.7, 27.7, 30.0],
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    borderWidth: 3,
+                    tension: 0.4,
+                    pointBackgroundColor: 'rgba(16, 185, 129, 1)',
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 0,
+                        max: 40,
+                        ticks: {
+                            stepSize: 10
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Section Fade In Animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.section-transition');
+            
+            const observerOptions = {
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        });
+    </script>
+</body>
+</html>
+    
